@@ -63,15 +63,23 @@ public class MonoTest {
 		Mono<String> mono2 = Mono.just("mono2");
 		Mono<String> mono3 = Mono.just("mono3");
 		// concatwith 경우 이후 publisher를 차례로 결합. 순차적 결합
-		mono1.concatWith(mono2).concatWith(mono3).subscribe(s -> log.info(s));
+		mono1.concatWith(mono2).concatWith(mono3)
+		.all(s -> s.contains("mono1"))
+		.subscribe(b -> System.out.println(b));
 		
-		Flux<String> flux1 = Flux.just("a", "b", "c");
+		mono1.concatWith(mono2).concatWith(mono3)
+		.subscribe(b -> System.out.println(b));		
+		
+		mono1.concatWith(mono2).concatWith(mono3)
+		.subscribe(b -> System.out.println(b));		
+		
+/*		Flux<String> flux1 = Flux.just("a", "b", "c");
 		Flux<String> flux2 = Flux.just("1", "2", "3");
 		Flux<String> intervalFlux1 = Flux.interval(Duration.ofMillis(100)).zipWith(flux1, (s1, s2) -> s1+","+s2);
 		Flux<String> intervalFlux2 = Flux.interval(Duration.ofMillis(70)).zipWith(flux2, (s1, s2) -> s1+s2);
 		//each of {1},{2},{3},{4} emits each 700ms, then |A|,|B|,|C| emit immediately
 		//intervalFlux1.concatWith(flux2).subscribe(s -> log.info(s));
-		intervalFlux1.concatWith(intervalFlux2).subscribe(s -> log.info(s));
+		intervalFlux1.concatWith(intervalFlux2).subscribe(s -> log.info(s));*/
 		
 		Thread.sleep(3000);
 	}
