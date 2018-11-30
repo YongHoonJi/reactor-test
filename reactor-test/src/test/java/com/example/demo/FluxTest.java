@@ -1,7 +1,9 @@
 package com.example.demo;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -18,7 +20,10 @@ public class FluxTest {
 		Flux<String> fw = Flux.just("hi", "jj");
 		Flux<String> mw = Flux.fromIterable(words);
 
-		mw.log().subscribe(s -> log.info(s));
+		mw.log().subscribe(s -> log.info(s),
+				e -> e.printStackTrace(), 
+				() -> System.out.println("complete!")
+				);
 	}
 
 	public void flatmap() {
@@ -26,8 +31,6 @@ public class FluxTest {
 				.zipWith(Flux.range(1, Integer.MAX_VALUE), (s, c) -> s + "," + c);
 		ml.subscribe(s -> log.info(s));
 	}
-
-	@Test
 	public void concatWith() {
 		Mono<String> missing = Mono.just("s");
 		Flux<String> allLetters = Flux
@@ -40,5 +43,5 @@ public class FluxTest {
 
 		allLetters.subscribe(System.out::println);
 	}
-
+	
 }

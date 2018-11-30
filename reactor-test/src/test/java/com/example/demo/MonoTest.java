@@ -57,7 +57,6 @@ public class MonoTest {
 		
 		Thread.sleep(3000);
 	}
-	@Test
 	public void concatWith() throws InterruptedException {
 		Mono<String> mono1 = Mono.just("mono1");
 		Mono<String> mono2 = Mono.just("mono2");
@@ -104,5 +103,46 @@ public class MonoTest {
 		
 		Thread.sleep(3000);
 	}
+	
+	public void subscriber_add() {
+	}
+	
+	@Test
+	public void exceptionTest() {
+		Mono<String> mono1 = getMono();
+		mono1
+		.flatMap(m -> map1(m))
+		.flatMap(m2 -> map2(m2))
+		.subscribe(
+				s -> {
+					System.out.println(s);
+				},
+				e -> {
+					e.printStackTrace();
+				},
+				() -> log.info("completed")
+		);
+	}
+	
+	private Mono<String> getMono() {
+		return Mono.defer(() -> {
+			System.out.println("mono");
+			return Mono.just("mono");
+		});
+	}
+	
+	private Mono<String> map1(String s) {
+		return Mono.defer(() -> {
+			System.out.println("map1");
+			return Mono.just(s + " map1");
+		});
+	}
+	
+	private Mono<String> map2(String s) {
+		return Mono.defer(() -> {
+			//return Mono.error(new Exception("error from map1"));
+			return Mono.just(s + " map2");
+		});
+	}	
 	
 }
